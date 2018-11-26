@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Providers;
-
+use App\Contracts\RepositoryInterface;
+use App\Eloquent\FreeAdsRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,7 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
-        $this->app->bind('Repositories\\Contracts\\RepositoryInterface', 'Repositories\\Eloquent\\Repository');
+        $this->app->singleton(FreeRepositoryInterface::class,FreeAdsRepository::class);
     }
 }
