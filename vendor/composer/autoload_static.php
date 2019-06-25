@@ -11,6 +11,7 @@ class ComposerStaticInitd8bed3113c055439798031bda1b9fddb
         '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         'e7223560d890eab89cda23685e711e2c' => __DIR__ . '/..' . '/psy/psysh/src/Psy/functions.php',
@@ -40,6 +41,7 @@ class ComposerStaticInitd8bed3113c055439798031bda1b9fddb
             'Symfony\\Polyfill\\Util\\' => 22,
             'Symfony\\Polyfill\\Php56\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\VarDumper\\' => 28,
             'Symfony\\Component\\Translation\\' => 30,
@@ -59,6 +61,7 @@ class ComposerStaticInitd8bed3113c055439798031bda1b9fddb
         array (
             'Psy\\' => 4,
             'Psr\\Log\\' => 8,
+            'Prophecy\\' => 9,
             'PhpParser\\' => 10,
         ),
         'N' => 
@@ -72,6 +75,10 @@ class ComposerStaticInitd8bed3113c055439798031bda1b9fddb
         'L' => 
         array (
             'League\\Flysystem\\' => 17,
+        ),
+        'J' => 
+        array (
+            'JakubOnderka\\PhpConsoleColor\\' => 29,
         ),
         'I' => 
         array (
@@ -128,6 +135,10 @@ class ComposerStaticInitd8bed3113c055439798031bda1b9fddb
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'Symfony\\Polyfill\\Ctype\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
         'Symfony\\Component\\Yaml\\' => 
         array (
@@ -193,6 +204,10 @@ class ComposerStaticInitd8bed3113c055439798031bda1b9fddb
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
+        'Prophecy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy',
+        ),
         'PhpParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
@@ -208,6 +223,10 @@ class ComposerStaticInitd8bed3113c055439798031bda1b9fddb
         'League\\Flysystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/flysystem/src',
+        ),
+        'JakubOnderka\\PhpConsoleColor\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src',
         ),
         'Illuminate\\' => 
         array (
@@ -248,11 +267,11 @@ class ComposerStaticInitd8bed3113c055439798031bda1b9fddb
     );
 
     public static $prefixesPsr0 = array (
-        'P' => 
+        'U' => 
         array (
-            'Prophecy\\' => 
+            'UpdateHelper\\' => 
             array (
-                0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
+                0 => __DIR__ . '/..' . '/kylekatarnls/update-helper/src',
             ),
         ),
         'M' => 
@@ -267,10 +286,6 @@ class ComposerStaticInitd8bed3113c055439798031bda1b9fddb
             'JakubOnderka\\PhpConsoleHighlighter' => 
             array (
                 0 => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src',
-            ),
-            'JakubOnderka\\PhpConsoleColor' => 
-            array (
-                0 => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src',
             ),
         ),
     );
