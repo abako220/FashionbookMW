@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Providers;
 
 use Illuminate\Routing\Router;
@@ -53,7 +52,9 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes(Router $router)
     {
         $router->group([
-            'namespace' => $this->namespace, 'middleware' => 'web',
+            //'namespace' => $this->namespace, 'middleware' => 'web',
+         'middleware' => ['api', 'cors'],
+        'namespace' => $this->namespace
         ], function ($router) {
             require app_path('Http/routes.php');
         });
