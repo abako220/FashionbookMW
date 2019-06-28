@@ -60,17 +60,17 @@ class Free_adsController extends Controller
          if(!empty($res)){
              return $this->sendResponse($res,ResponseMessage::SUCCESS_POST_MESSAGE);
          }
-            return $this->sendError(ResponseMessage::FAILURE_POST_MESSAGE, RespondCode::BAD_REQUEST);
+            return $this->sendError(ResponseMessage::FAILURE_POST_MESSAGE, ResponseCode::BAD_REQUEST);
      }
 
      public function all_post_ads(Request $req){
         $response = $this->ads->all($req->get('limit'),$req->get('status'));
-        Log::info('List of active ads'. $response);
+        Log::info('List of active ads'. json_encode($response));
         if($response){
          return $this->sendResponse($response,'list of posted products');
         }
         Log::error('Error occurred while trying to view all Ads');
-         return $this->sendError(ResponseMessage::NO_CONTENT, RespondCode::NO_CONTENT);
+         return $this->sendError(ResponseMessage::NO_CONTENT, ResponseCode::NO_CONTENT);
 
      }
      public function getOneAdsAndRelatedAds(Request $req){
@@ -80,6 +80,6 @@ class Free_adsController extends Controller
            return $this->sendResponse($response,[]);
         }
         Log::notice('No content Found for this Ads with the id'.$req->route('id'));
-        return $this->sendError(ResponseMessage::NO_CONTENT, RespondCode::NO_CONTENT);
+        return $this->sendError(ResponseMessage::NO_CONTENT, ResponseCode::NO_CONTENT);
      }
 }

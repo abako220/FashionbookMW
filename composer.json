@@ -14,7 +14,12 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
-        "tymon/jwt-auth": "^0.5.12"
+        "tymon/jwt-auth": "^0.5.12",
+        "infyomlabs/laravel-generator": "dev-master",
+        "infyomlabs/swagger-generator": "dev-master",
+        "jlapp/swaggervel": "dev-master",
+        "predis/predis": "^1.1",
+        "doctrine/inflector": "1.1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

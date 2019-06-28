@@ -53,7 +53,7 @@ class FreeAdsRepository implements FreeRepositoryInterface {
                 'seller_address'=> $data['seller_address'] ? $data['seller_address'] : null,
                 'business_name'=> isset($data['business_name']) ? $data['business_name'] : null,
                 'main_image'=> $data['main_image'] ? $data['main_image'] : 'N/A']);
-                
+                 
                 
             return $fid;
         }
@@ -79,7 +79,16 @@ class FreeAdsRepository implements FreeRepositoryInterface {
         }
 
         public function all($limit,$status){
-            return $this->model->where('active',$status)->paginate($limit);
+
+            $result = DB::table('free_ads')->select('free_ads.*', DB::raw('count(*) as total_item'))
+                    ->groupby('product_sub_id')->skip(0)->take($limit)->orderby('product_sub_id')->get();
+                    foreach($result as $key=>$value) {
+                        $result[$key]->main_image = DB::table('free_ads')->select('free_ads.main_image')->where('product_sub_id',$value->product_sub_id)
+                        ->take(3)->get();
+                      
+                    }
+                    return $result;
+            
         }
 
         public function findOneAndRelatedPost($id){

@@ -28,10 +28,14 @@ Route::group(['prefix' => 'product'], function () {
         Route::post('free-post', 'Free_adsController@free_ads');
         Route::get('category', 
         'Product_CategoryController@productCategoryList');
+
+        Route::get('all-ads', 'Free_adsController@all_post_ads');
+            Route::get('view-ads-detail/{id}', 'Free_adsController@getOneAdsAndRelatedAds');
+
             Route::get('category/{id}', 'Product_sub_CategoryController@productSubCategoryList');
 Route::group(['middleware' => ['jwt.verify']], function() {
-            Route::get('all-ads', 'Free_adsController@all_post_ads');
-            Route::get('view-ads-detail/{id}', 'Free_adsController@getOneAdsAndRelatedAds');
+           // Route::get('all-ads', 'Free_adsController@all_post_ads');
+            //Route::get('view-ads-detail/{id}', 'Free_adsController@getOneAdsAndRelatedAds');
             
     
         });

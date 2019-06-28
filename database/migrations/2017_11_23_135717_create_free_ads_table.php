@@ -24,10 +24,10 @@ class CreateFreeAdsTable extends Migration
             $table->string('closure', 100)->default('0');
             $table->string('style', 150)->default('0');
             $table->integer('size')->default('0');
-            $table->string('main_material', 200)->default('0');
-            $table->string('main_stone', 100)->default('0');
-            $table->string('upper_material', 100)->default('0');
-            $table->string('outsole_material', 100)->default('0');
+            $table->string('merchant_id', 100)->nullable();
+            $table->string('seller_address', 200)->nullable();
+            $table->string('business_name', 100)->nullable();
+            $table->string('outsole_material', 20)->unique();
             $table->string('fastening', 100)->default('0');
             $table->string('movement', 100)->default('0');
             $table->string('display', 100)->default('0');
@@ -45,7 +45,7 @@ class CreateFreeAdsTable extends Migration
             $table->string('benefit', 100)->default('0');
             $table->string('age_group', 100)->default('0');
             $table->string('packages', 100)->default('0');
-            $table->string('form', 100)->default('0');
+            $table->char('active', 1)->nullable();
             $table->string('equipment', 100)->default('0');
             $table->Integer('age')->default(0);
             $table->longtext('description');
