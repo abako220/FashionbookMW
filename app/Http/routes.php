@@ -33,6 +33,7 @@ Route::group(['prefix' => 'product'], function () {
             Route::get('view-ads-detail/{id}', 'Free_adsController@getOneAdsAndRelatedAds');
 
             Route::get('category/{id}', 'Product_sub_CategoryController@productSubCategoryList');
+            Route::get('ads-similar-item-list/{subCatId}', 'Free_adsController@similarSubCategoryItemsAndSimilarCategory');
 Route::group(['middleware' => ['jwt.verify']], function() {
            // Route::get('all-ads', 'Free_adsController@all_post_ads');
             //Route::get('view-ads-detail/{id}', 'Free_adsController@getOneAdsAndRelatedAds');

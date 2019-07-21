@@ -74,12 +74,25 @@ class Free_adsController extends Controller
 
      }
      public function getOneAdsAndRelatedAds(Request $req){
-        $response = $this->ads->findOneAndRelatedPost($req->route('id'));
+        $response = $this->ads->findOneAndRelatedPost($req->route('id'), $req->get('limit'), $req->get('status'));
         Log::info('Trying to get Information of a single ads'. $req->route('id'));
         if($response){
-           return $this->sendResponse($response,[]);
+           return $this->sendResponse($response,'product detail view and similar ads');
         }
         Log::notice('No content Found for this Ads with the id'.$req->route('id'));
         return $this->sendError(ResponseMessage::NO_CONTENT, ResponseCode::NO_CONTENT);
      }
+
+     public function similarSubCategoryItemsAndSimilarCategory(Request $req){
+      $response = $this->ads->similarSubCategoryItemsAndSimilarCategory($req->route('subCatId'), $req->get('status'), $req->get('limit'),$req->get('sort'));
+   
+      Log::info('Trying to get Information of a similar subcategory items and similar category'. $req->route('subCatId'));
+      if($response){
+         return $this->sendResponse($response,[]);
+      }
+      Log::notice('No content Found for this Ads with the id'.$req->route('subCatId'));
+      return $this->sendError(ResponseMessage::NO_CONTENT, ResponseCode::NO_CONTENT);
+   }
+
+    
 }

@@ -78,29 +78,114 @@ class FreeAdsRepository implements FreeRepositoryInterface {
             return $id;
         }
 
-        public function all($limit,$status){
-
+        public function all($limit,$status){ // 1st page/landing page
             $result = DB::table('free_ads')->select('free_ads.*', DB::raw('count(*) as total_item'))
-                    ->groupby('product_sub_id')->skip(0)->take($limit)->orderby('product_sub_id')->get();
+                        ->where('active',$status)->groupby('product_sub_id')->skip(0)->take($limit)->orderby('product_sub_id')->get();
                     foreach($result as $key=>$value) {
-                        $result[$key]->main_image = DB::table('free_ads')->select('free_ads.main_image')->where('product_sub_id',$value->product_sub_id)
-                        ->take(3)->get();
+                        $result[$key]->other_images = DB::table('free_ads')->select('free_ads.main_image')->where('product_sub_id',$value->product_sub_id)
+                        ->where('active', $status)->take($limit)->get();
                       
                     }
                     return $result;
             
         }
 
-        public function findOneAndRelatedPost($id){
-            $post_add ['ads-details']= $this->model->where('fid',$id)->first();
-            $product_sub_category_id = $post_add ['ads-details']['product_sub_id'];
+        public function getAllSimilarCategory($catId, $limit, $status, $sort) {
+            $result = DB::table('free_ads')->where('category_id', $catId)->where('active', $status)
+                        ->skip(0)->take($limit)->orderby('created_at', $sort)->get();
+                      $image_count = 0;  
+                    foreach($result as $key=>$value) {
+                        $result[$key]->other_images = DB::table('free_ads')->join('product_images','product_images.post_id','=','free_ads.fid')
+                            ->where('free_ads.fid',$value->fid)->select('product_images.*')->get();
+                            $image_count = 0;
+                            $image_array = $result[$key]->other_images;
+                            if(sizeof($image_array) >=1) {
+                                foreach($image_array as $val){
+                                    $image_count = $image_count+1;
+                                    $result[$key]->total_image = $image_count;
+    
+                                }
+                            }
+                            $result[$key]->total_image = $image_count;
+                            
+                        
+                    }
+                   
+                    return $result;
+        }
+
+        public function similarSubCategoryItemsAndSimilarCategory($product_sub_id, $status,$limit,$sort) {
+            $image_count = 0;
+            $result = DB::table('free_ads')->where('product_sub_id', $product_sub_id)->where('active', $status)
+                        ->skip(0)->take($limit)->orderby('created_at',$sort)
+                        ->get();
+                       
+                        if(count($result) > 1) {
+                            foreach($result as $key=>$value) {
+                                $result[$key]->other_images = DB::table('free_ads')->join('product_images','product_images.post_id','=','free_ads.fid')
+                                ->where('free_ads.fid',$value->fid)->select('product_images.*')->get();
+                                $image_count = 0;
+                                $image_array = $result[$key]->other_images;
+                                if(sizeof($image_array) >=1) {
+                                    foreach($image_array as $val){
+                                        $image_count = $image_count+1;
+                                        $result[$key]->total_image = $image_count;
+        
+                                    }
+                                }
+                                $result[$key]->total_image = $image_count;
+                                $newArray['ads'][] =  $result[$key];
+                                
+                            }
+
+                            $newArray['similar_ads'] = $this->getAllSimilarCategory($result[0]->category_id,$limit,$status, $sort);
+                        
+                            
+                        }else{
+
+                            return [];
+                        }
+                       
+                        return $newArray;            
+                    
+        }
+
+        public function viewProductSubCategoryItemAndRelatedCategory($limit,$status,$sub_cat_id, $sort) {
+            $image_count = 0;
+            $result = DB::table('free_ads')->where('product_sub_id', $sub_cat_id)->where('active', $status)
+                        ->skip(0)->take($limit)->orderby('created_at',$sort)
+                        ->get();
+                       
+                        if(count($result) > 1) {
+                            foreach($result as $key=>$value) {
+                                $result[$key]->other_images = DB::table('free_ads')->join('product_images','product_images.post_id','=','free_ads.fid')
+                                ->where('free_ads.fid',$value->fid)->select('product_images.*')->get();
+                                $image_count = 0;
+                                $image_array = $result[$key]->other_images;
+                                if(sizeof($image_array) >=1) {
+                                    foreach($image_array as $val){
+                                        $image_count = $image_count+1;
+                                        $result[$key]->total_image = $image_count;
+        
+                                    }
+                                }
+                                $result[$key]->total_image = $image_count;
+                                $newArray[] =  $result[$key];
+                                
+                            }
+                            return $newArray;
+                        }else{
+                            return [];
+            }
+                   
+        }
+
+        public function findOneAndRelatedPost($id,$limit, $status){
+            $post_add = $this->model->where('fid',$id)->get();
+            $product_sub_category_id = $post_add[0]->product_sub_id;
             if(isset($post_add) && !empty($post_add) && !is_null($post_add)){
-                $post_add ['ads-images'] = $this->image->where('post_id', 'like', '%'.$id.'%')->get();
-                $post_add['similar_ads'] = DB::table('free_ads')->join('product_images','product_images.post_id','=','free_ads.fid')
-                ->where('free_ads.product_sub_id',$product_sub_category_id)
-                ->select(DB::raw('count(free_ads.product_sub_id) as image_count, free_ads.*, product_images.path as main_image'))->paginate(50);
-
-
+                $post_add [0]->other_images = $this->image->where('post_id', 'like', '%'.$id.'%')->get();
+                $post_add[0]->similar_ads = $this->viewProductSubCategoryItemAndRelatedCategory($limit,$status,$product_sub_category_id, 'asc');
                 return $post_add;
             }
             
