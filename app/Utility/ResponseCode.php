@@ -7,4 +7,5 @@ class ResponseCode{
     const UNAUTHORIZE_USER = 401;
     const OK = 200;
     const NO_CONTENT = 204;
+    const INVALID_FILE_FORMAT = 422;
 }

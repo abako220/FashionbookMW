@@ -10,6 +10,7 @@ use App\Utility\ResponseMessage;
 use App\Utility\ResponseCode;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\SendEmailForNewFreeAds;
 
 class Free_adsController extends Controller
 {
@@ -39,7 +40,9 @@ class Free_adsController extends Controller
             'place'=>'bail|required|min:2',
             'isnogiatiable'=>'bail|required',
             'contact_name'=>'bail|required|min:2',
-            'business_name'=>'bail|required|min:2'
+            'business_name'=>'bail|required|min:2',
+            'main_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'other_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
          ]);
 
          if($validator->fails()){
@@ -53,15 +56,21 @@ class Free_adsController extends Controller
       * @return json|array
       */
      public function free_ads(Request $req)
-     {
+      {
+         $details = array();
          $data = $req->all();
          $this->validator($data);
          $res = $this->ads->postFreeAds($data);
          if(!empty($res)){
+            $details['email'] = 'abako220@gmail.com';
+            Log::info("Request Cycle with Queues Begins");
+            //$this->dispatch((new SendEmailForNewFreeAds($details))->delay(60 * 2));
+            $this->dispatch(new SendEmailForNewFreeAds($details));
+            Log::info("Request Cycle with Queues Ends");
              return $this->sendResponse($res,ResponseMessage::SUCCESS_POST_MESSAGE);
          }
             return $this->sendError(ResponseMessage::FAILURE_POST_MESSAGE, ResponseCode::BAD_REQUEST);
-     }
+      }
 
      public function all_post_ads(Request $req){
         $response = $this->ads->all($req->get('limit'),$req->get('status'));

@@ -13,5 +13,6 @@ class ResponseMessage{
     const LIST_OF_PRODUCT_SUB_CATEGORY = 'List of Product Sub Category(s)';
     const LIST_OF_STATE = 'List of states';
     const LIST_OF_LGA = 'List of Lga';
+    const INVALID_FILE_FORMAT = "Invalid file Format";
 
 }

@@ -157,6 +157,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         'Tymon\JWTAuth\Providers\JWTAuthServiceProvider',
+        'JD\Cloudder\CloudderServiceProvider',
 
     ],
 
@@ -206,6 +207,7 @@ return [
 
         'JWTAuth' => 'Tymon\JWTAuth\Facades\JWTAuth',
         'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory',
+        'Cloudder' => 'JD\Cloudder\Facades\Cloudder',
         
 
     ],

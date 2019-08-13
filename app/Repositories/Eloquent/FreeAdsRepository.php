@@ -5,11 +5,12 @@ use App\Utility\Util as util;
 use App\Free_ads;
 use App\Product_Images;
 use Illuminate\Support\Facades\DB;
+
  
 class FreeAdsRepository implements FreeRepositoryInterface {
  
     protected $model;
-    protected $image;
+    protected $service;
     /**
      * Specify Model class name
      *
@@ -19,7 +20,7 @@ class FreeAdsRepository implements FreeRepositoryInterface {
 
     function __construct(Free_ads $model, Product_Images $product_image){
         $this->model = $model;
-        $this->image = $product_image;
+        $this->service = $product_image;
     }
 
     /**
@@ -33,6 +34,10 @@ class FreeAdsRepository implements FreeRepositoryInterface {
 
             $id = util::generateID();
             $fid = self::checkIfIdExist($id);
+            
+            \Cloudder::upload($data['main_image']);
+            $cloudinary_response = \Cloudder::getResult(); 
+            $main_image_path = $cloudinary_response['url'];
             $this->model->create([
                 'fid'=>$fid,
                 'category_id'=>$data['category_id'],
@@ -52,16 +57,45 @@ class FreeAdsRepository implements FreeRepositoryInterface {
                 'merchant_id'=> $data['merchant_id'] ? $data['merchant_id'] : null,
                 'seller_address'=> $data['seller_address'] ? $data['seller_address'] : null,
                 'business_name'=> isset($data['business_name']) ? $data['business_name'] : null,
-                'main_image'=> $data['main_image'] ? $data['main_image'] : 'N/A']);
+                'main_image'=>$main_image_path]);
+
+                //products image fields
+                $data['img_id'] = $fid;
+                $data['post_id'] = $fid;
+
+               
+                $this->updateImage($data);
                  
                 
             return $fid;
         }
-    
+
+        
     }
 
+   
+    public function updateImage ($data = array()) {
+        $i=0;
+        foreach($data['other_image'] as $name)
+        {
+            $i +=1;
+            \Cloudder::upload($name);
+            $res = \Cloudder::getResult(); 
+            $url = $res['url'];
+            $this->service->create(['img_id'=>$data['img_id'].$i,
+                                        'merchant_id'=> $data['merchant_id'],
+                                        'path'=> $url,
+                                        'post_id'=> $data['post_id']
+                                        ]);
+        }
+
+     }
+
+
+    
+
         public function checkIfIdExist($id){
-            $array_result = array();
+            
             do{
                 $id = util::generateID();
         

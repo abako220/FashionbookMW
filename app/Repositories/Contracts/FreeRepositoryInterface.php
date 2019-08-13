@@ -9,4 +9,5 @@ interface FreeRepositoryInterface {
     public function viewProductSubCategoryItemAndRelatedCategory($limit,$status,$sub_cat_id,$sort);
     public function similarSubCategoryItemsAndSimilarCategory($catId, $status,$limit, $sort);
     public function getAllSimilarCategory($cat, $limit, $status,$sort);
+    public function updateImage ($data = array());
 }
