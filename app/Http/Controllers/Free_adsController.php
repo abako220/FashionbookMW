@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\Contracts\FreeRepositoryInterface;
+use App\Repositories\Contracts\UsersInterface;
 use App\Utility\ResponseMessage;
 use App\Utility\ResponseCode;
 use Illuminate\Support\Facades\Redis;
@@ -21,9 +22,11 @@ class Free_adsController extends Controller
      * */
 
      protected $ads;
+     protected $user;
 
-     public function __construct(FreeRepositoryInterface $ads){
+     public function __construct(FreeRepositoryInterface $ads, UsersInterface $user){
         $this->ads = $ads;
+        $this->user = $user;
      }
 
      protected function validator(array $data){
@@ -101,6 +104,27 @@ class Free_adsController extends Controller
       }
       Log::notice('No content Found for this Ads with the id'.$req->route('subCatId'));
       return $this->sendError(ResponseMessage::NO_CONTENT, ResponseCode::NO_CONTENT);
+   }
+
+   public function searchProduct(Request $req) {
+      $title = $req->get('title');
+      $response = $this->ads->searchProduct($title);
+      if($response) {
+         return $this->sendResponse($response,[]);
+      }
+
+      return $this->sendError(ResponseMessage::NO_CONTENT, ResponseCode::NO_CONTENT);
+      
+   }
+
+   public function listMerchantFreeAds(Request $req) {
+      $merchant_id = $req->route('merchant_id');
+      if($this->user->exist($merchant_id)) {
+         $response = $this->ads->listMerchantFreeAds($merchant_id);
+         return $this->sendResponse($response,[]);
+      }
+      return $this->sendError(ResponseMessage::NO_CONTENT, ResponseCode::NO_CONTENT);
+      
    }
 
     

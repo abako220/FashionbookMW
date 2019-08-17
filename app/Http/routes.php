@@ -23,6 +23,22 @@ Route::group(['prefix' => 'v1','middleware'=>'cors'], function () {
         Route::post('login', 'UserController@authenticate');
          Route::get('state', 'StateController@all');
         Route::get('state/{id}', 'LgaController@lga');
+        Route::post('changePassword/{email}', 'UserController@changePassword');
+        Route::put('update/{email}', 'UserController@update');
+//
+
+Route::group(['prefix' => 'merchant'], function () {
+    Route::get('merchant_rating/{merchant_id}', 'Rate_MerchantController@showRating');
+    Route::get('like_product/{product_id}', 'LikeProductController@ViewProductLike');
+   
+
+});
+
+Route::group(['prefix' => 'customer'], function () {
+            Route::post('rate_merchant', 'Rate_MerchantController@rateMerchant');
+            Route::post('like_product', 'LikeProductController@likeProduct');
+            //
+});
         
 Route::group(['prefix' => 'product'], function () {
         Route::post('free-post', 'Free_adsController@free_ads');
@@ -31,22 +47,22 @@ Route::group(['prefix' => 'product'], function () {
 
         Route::get('all-ads', 'Free_adsController@all_post_ads');
             Route::get('view-ads-detail/{id}', 'Free_adsController@getOneAdsAndRelatedAds');
+            Route::get('search', 'Free_adsController@searchProduct');
 
             Route::get('category/{id}', 'Product_sub_CategoryController@productSubCategoryList');
             Route::get('ads-similar-item-list/{subCatId}', 'Free_adsController@similarSubCategoryItemsAndSimilarCategory');
 Route::group(['middleware' => ['jwt.verify']], function() {
            // Route::get('all-ads', 'Free_adsController@all_post_ads');
             //Route::get('view-ads-detail/{id}', 'Free_adsController@getOneAdsAndRelatedAds');
+            Route::get('merchant/{merchant_id}', 'Free_adsController@listMerchantFreeAds');
             
     
         });
         
     });
-
-    
-
-
 });
+
+
 
 //Route::rollback('',function(){
   //  return response()->json(['status-code'=>'404','status'=> 'Page not found']);

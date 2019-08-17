@@ -38,6 +38,7 @@ return array(
     'CreateFreeAdsTable' => $baseDir . '/database/migrations/2017_11_23_135717_create_free_ads_table.php',
     'CreateJobsTable' => $baseDir . '/database/migrations/2019_08_13_140320_create_jobs_table.php',
     'CreateLgasTable' => $baseDir . '/database/migrations/2017_11_23_135737_create_lgas_table.php',
+    'CreateLikeProductsTable' => $baseDir . '/database/migrations/2019_08_16_092223_create_like_products_table.php',
     'CreateMerchantProductsTable' => $baseDir . '/database/migrations/2017_11_23_135815_create_merchant_products_table.php',
     'CreateMerchantsTable' => $baseDir . '/database/migrations/2017_11_23_135752_create_merchants_table.php',
     'CreateNegotiationsTable' => $baseDir . '/database/migrations/2017_11_23_135839_create_negotiations_table.php',

@@ -409,6 +409,7 @@ class ComposerStaticInit9d220abcd498248205c83127575bb92e
         'CreateFreeAdsTable' => __DIR__ . '/../..' . '/database/migrations/2017_11_23_135717_create_free_ads_table.php',
         'CreateJobsTable' => __DIR__ . '/../..' . '/database/migrations/2019_08_13_140320_create_jobs_table.php',
         'CreateLgasTable' => __DIR__ . '/../..' . '/database/migrations/2017_11_23_135737_create_lgas_table.php',
+        'CreateLikeProductsTable' => __DIR__ . '/../..' . '/database/migrations/2019_08_16_092223_create_like_products_table.php',
         'CreateMerchantProductsTable' => __DIR__ . '/../..' . '/database/migrations/2017_11_23_135815_create_merchant_products_table.php',
         'CreateMerchantsTable' => __DIR__ . '/../..' . '/database/migrations/2017_11_23_135752_create_merchants_table.php',
         'CreateNegotiationsTable' => __DIR__ . '/../..' . '/database/migrations/2017_11_23_135839_create_negotiations_table.php',

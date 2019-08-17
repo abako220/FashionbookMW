@@ -18,6 +18,7 @@ class CreateRateMerchantsTable extends Migration
             $table->string('comments', 200);
             $table->string('merchant_id', 100);
             $table->string('customer_id', 200);
+            $table->string('full_name', 100);
             $table->timestamps();
         });
     }

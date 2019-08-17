@@ -93,6 +93,39 @@ class UserController extends Controller
 
                     return response()->json(compact('user'));
             }
+        
+        public function changePassword(Request $request) {
+            $data = $request->all();
+            $email = $request->route('email');
+            $newPassword = Hash::make($data['newPassword']);
+            $res = $this->userModel->returnUserInfo($email);
+            if($res){
+                if(strcmp($data['oldPassword'], $data['newPassword']) == 0){
+                   return $this->sendError(ResponseMessage::PASSWORD_MUST_BE_DIFFERENT, ResponseCode::BAD_REQUEST);
+                }
+                $this->userModel->changePassword($email,$newPassword);
+                if(!(Hash::check($data['oldPassword'], $res->password))){
+                    return $this->sendError(ResponseMessage::PASSWORD_ERROR, ResponseCode::BAD_REQUEST);
+                }else{
+                    $result = $this->userModel->changePassword($email,$newPassword);
+                    return $this->sendResponse($result, ResponseMessage::PASSWORD_CHANGED);
+                }
+                
+                
+                
+            }
+            return $this->sendError(ResponseMessage::USER_DOES_NOT_EXIST, ResponseCode::BAD_REQUEST);
+        }
 
+        public function update(Request $request) {
+            $data = $request->all();
+            $email = $request->route('email');
+            $res = $this->userModel->update($email,$data);
+            if($res){
+                return $this->sendResponse($res, ResponseMessage::USER_INFO_UPDATED);
+            }
+
+            return $this->sendError(ResponseMessage::NO_CONTENT, ResponseCode::NO_CONTENT); 
+        }
 
 }

@@ -218,14 +218,68 @@ class FreeAdsRepository implements FreeRepositoryInterface {
             $post_add = $this->model->where('fid',$id)->get();
             $product_sub_category_id = $post_add[0]->product_sub_id;
             if(isset($post_add) && !empty($post_add) && !is_null($post_add)){
-                $post_add [0]->other_images = $this->image->where('post_id', 'like', '%'.$id.'%')->get();
+                $post_add [0]->other_images = $this->service->where('post_id', 'like', '%'.$id.'%')->get();
                 $post_add[0]->similar_ads = $this->viewProductSubCategoryItemAndRelatedCategory($limit,$status,$product_sub_category_id, 'asc');
                 return $post_add;
-            }
-            
-
+        }
         }
 
+        public function checkIfProductExist($product_id){
+            $res = $this->model->where('fid', $product_id)->first();
+            if(!is_null($res)) {
+                return true;
+            }
+            return false;
+        }
 
+        public function searchProduct($title) {
+            return $this->model->where('title', 'like', '%'.$title.'%')
+                        ->where('active', 1)->paginate(15);
+        }
+
+        public function updateFreePostAds($merchant_id, $data) {
+            return $this->model->where('merchant_id', $merchant_id)->where('fid',$data['product_id'])->update([
+                'title' => $data['title'],
+                'colour'=> $data['colour'],
+                'type'=> $data['type'],
+                'seller_address' => $data['seller_address'],
+                'business_name'=> $data['business_name'],
+                'description'=> $data['description'],
+                'price'=> $data['price'],
+                'phone'=> $data['phone'],
+                'contact'=> $data['contact'],
+                'region'=> $data['region'],
+                'place'=> $data['place']
+            ]);
+        }
+
+        public function listMerchantFreeAds($merchant_id) {
+            $image_count = 0;
+            $result = DB::table('free_ads')->where('merchant_id', $merchant_id)->where('active', 1)
+                        ->orderby('created_at','desc')->paginate(50);
+                        if(count($result) > 1) {
+                            foreach($result as $key=>$value) {
+                                $result[$key]->other_images = DB::table('free_ads')->join('product_images','product_images.post_id','=','free_ads.fid')
+                                ->where('free_ads.fid',$value->fid)->select('product_images.*')->get();
+                                $image_count = 0;
+                                $image_array = $result[$key]->other_images;
+                                if(sizeof($image_array) >=1) {
+                                    foreach($image_array as $val){
+                                        $image_count = $image_count+1;
+                                        $result[$key]->total_image = $image_count;
+        
+                                    }
+                                }
+                                $result[$key]->total_image = $image_count;
+                                $newArray[] =  $result[$key];
+                                
+                            }
+                            return $newArray;
+                        }else{
+                            return [];
+            }
+                   
+        }
+            
 
 }
