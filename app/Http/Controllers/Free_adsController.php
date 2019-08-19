@@ -127,5 +127,18 @@ class Free_adsController extends Controller
       
    }
 
+   public function updateFreePostAds(Request $req) {
+      $merchant_id = $req->route('merchant_id');
+      $data = $req->all();
+      if($this->user->exist($merchant_id)) {
+         $response = $this->ads->updateFreePostAds($merchant_id, $data);
+         if(!empty($response)) {
+            return $this->sendResponse($response,ResponseMessage::FREE_POST_UPDATED);
+         }
+         return $this->sendError(ResponseMessage::NO_CONTENT, ResponseCode::NO_CONTENT);
+      }
+      return $this->sendError(ResponseMessage::NO_CONTENT, ResponseCode::NO_CONTENT);
+   }
+
     
 }

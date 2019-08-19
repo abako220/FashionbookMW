@@ -23,9 +23,7 @@ Route::group(['prefix' => 'v1','middleware'=>'cors'], function () {
         Route::post('login', 'UserController@authenticate');
          Route::get('state', 'StateController@all');
         Route::get('state/{id}', 'LgaController@lga');
-        Route::post('changePassword/{email}', 'UserController@changePassword');
-        Route::put('update/{email}', 'UserController@update');
-//
+        
 
 Route::group(['prefix' => 'merchant'], function () {
     Route::get('merchant_rating/{merchant_id}', 'Rate_MerchantController@showRating');
@@ -55,6 +53,11 @@ Route::group(['middleware' => ['jwt.verify']], function() {
            // Route::get('all-ads', 'Free_adsController@all_post_ads');
             //Route::get('view-ads-detail/{id}', 'Free_adsController@getOneAdsAndRelatedAds');
             Route::get('merchant/{merchant_id}', 'Free_adsController@listMerchantFreeAds');
+            Route::put('merchant/update_ads/{merchant_id}', 'Free_adsController@updateFreePostAds');
+            Route::post('changePassword/{email}', 'UserController@changePassword');
+            Route::put('update/{email}', 'UserController@update');
+            Route::get('merchant_profile/{email}', 'UserController@viewProfile');
+//
             
     
         });

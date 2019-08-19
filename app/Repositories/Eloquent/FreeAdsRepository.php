@@ -238,19 +238,25 @@ class FreeAdsRepository implements FreeRepositoryInterface {
         }
 
         public function updateFreePostAds($merchant_id, $data) {
-            return $this->model->where('merchant_id', $merchant_id)->where('fid',$data['product_id'])->update([
-                'title' => $data['title'],
-                'colour'=> $data['colour'],
-                'type'=> $data['type'],
-                'seller_address' => $data['seller_address'],
-                'business_name'=> $data['business_name'],
-                'description'=> $data['description'],
-                'price'=> $data['price'],
-                'phone'=> $data['phone'],
-                'contact'=> $data['contact'],
-                'region'=> $data['region'],
-                'place'=> $data['place']
-            ]);
+            $res =  $this->model->where('merchant_id', $merchant_id)->where('fid',$data['product_id'])->first();
+            if(!is_null($res)){
+                return $res->update([
+                    'title' => $data['title'],
+                    'colour'=> $data['colour'],
+                    'type'=> $data['type'],
+                    'seller_address' => $data['seller_address'],
+                    'business_name'=> $data['business_name'],
+                    'description'=> $data['description'],
+                    'price'=> $data['price'],
+                    'phone'=> $data['phone'],
+                    'contact'=> $data['contact'],
+                    'region'=> $data['region'],
+                    'place'=> $data['place']
+                ]);
+            }
+
+            return [];
+            
         }
 
         public function listMerchantFreeAds($merchant_id) {

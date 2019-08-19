@@ -128,4 +128,14 @@ class UserController extends Controller
             return $this->sendError(ResponseMessage::NO_CONTENT, ResponseCode::NO_CONTENT); 
         }
 
+        public function viewProfile(Request $request) {
+            $email = $request->route('email');
+            $res = $this->userModel->returnUserInfo($email);
+            if($res){
+                return $this->sendResponse($res,[]);
+            }
+
+            return $this->sendError(ResponseMessage::NO_CONTENT, ResponseCode::NO_CONTENT); 
+        }
+
 }
