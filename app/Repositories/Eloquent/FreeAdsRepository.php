@@ -117,7 +117,7 @@ class FreeAdsRepository implements FreeRepositoryInterface {
                         ->where('active',$status)->groupby('product_sub_id')->skip(0)->take($limit)->orderby('product_sub_id')->get();
                     foreach($result as $key=>$value) {
                         $result[$key]->other_images = DB::table('free_ads')->select('free_ads.main_image')->where('product_sub_id',$value->product_sub_id)
-                        ->where('active', $status)->take($limit)->get();
+                        ->where('active', $status)->get();
                       
                     }
                     return $result;
