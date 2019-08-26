@@ -14,4 +14,9 @@ class ProductCategoryImp implements ProductCategoryInterface {
     public function categoryList(){
         return $this->model->all();
     }
+
+    public function category($id)
+    {
+        return $this->model->find($id);
+    }
 }

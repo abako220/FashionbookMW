@@ -14,4 +14,9 @@ class LgaImpl implements LgaInterface {
     public function lga($id){
         return $this->model->where('state_id', $id)->get()->toArray();
     }
+
+    public function getLgaId($id) 
+    {
+        return $this->model->where('lga_id',$id)->first();
+    }
 }

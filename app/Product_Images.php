@@ -12,5 +12,5 @@ class Product_Images extends Model
     public $primaryKey = 'img_id';
    // public $foreignKey = 'post_id';
     public $table = 'product_images';
-    protected $fillable = ['img_id', 'merchant_id','path','post_id','store_id'];
+    protected $fillable = ['img_id', 'merchant_id','path','small_size_path','post_id','store_id'];
 }

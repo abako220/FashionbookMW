@@ -1,9 +1,13 @@
 <?php 
 namespace App\Repositories\Eloquent; 
 use App\Repositories\Contracts\FreeRepositoryInterface;
+use App\Repositories\Contracts\ProductSubCatInterface;
+use App\Repositories\Contracts\ProductCategoryInterface;
 use App\Utility\Util as util; 
 use App\Free_ads;
 use App\Product_Images;
+use App\Repositories\Contracts\LgaInterface;
+use App\Repositories\Contracts\StateInterface;
 use Illuminate\Support\Facades\DB;
 
  
@@ -11,6 +15,8 @@ class FreeAdsRepository implements FreeRepositoryInterface {
  
     protected $model;
     protected $service;
+    protected $sub_cat;
+    protected $cat;
     /**
      * Specify Model class name
      *
@@ -18,9 +24,14 @@ class FreeAdsRepository implements FreeRepositoryInterface {
      */
     
 
-    function __construct(Free_ads $model, Product_Images $product_image){
+    function __construct(Free_ads $model, Product_Images $product_image, ProductSubCatInterface $sub_cat, 
+    ProductCategoryInterface $cat, StateInterface $state, LgaInterface $lga){
         $this->model = $model;
         $this->service = $product_image;
+        $this->sub_cat = $sub_cat;
+        $this->cat = $cat;
+        $this->state = $state;
+        $this->lga = $lga;
     }
 
     /**
@@ -34,11 +45,26 @@ class FreeAdsRepository implements FreeRepositoryInterface {
 
             $id = util::generateID();
             $fid = self::checkIfIdExist($id);
+
+            \Cloudinary::config(array(
+
+                "cloud_name" => env('CLOUDINARY_CLOUD_NAME'),
             
-            \Cloudder::upload($data['main_image']);
-            $cloudinary_response = \Cloudder::getResult(); 
-            $main_image_path = $cloudinary_response['url'];
-            $this->model->create([
+                "api_key" => env('CLOUDINARY_API_KEY'),
+            
+                "api_secret" => env('CLOUDINARY_API_SECRET')
+            
+            ));
+
+            
+            $res =  \Cloudinary\Uploader::upload($data['main_image'], array( 
+                "eager" => array(
+                  array("width" => 115, "height" => 115, "crop" => "pad"),
+                  array("width" => 100, "height" => 100, "crop" => "crop")))
+            );
+            $main_image_path = $res['url'];
+            
+             $this->model->create([
                 'fid'=>$fid,
                 'category_id'=>$data['category_id'],
                 'product_sub_id'=>$data['sub_category'],
@@ -63,7 +89,6 @@ class FreeAdsRepository implements FreeRepositoryInterface {
                 $data['img_id'] = $fid;
                 $data['post_id'] = $fid;
 
-               
                 $this->updateImage($data);
                  
                 
@@ -79,12 +104,18 @@ class FreeAdsRepository implements FreeRepositoryInterface {
         foreach($data['other_image'] as $name)
         {
             $i +=1;
-            \Cloudder::upload($name);
-            $res = \Cloudder::getResult(); 
+           $res =  \Cloudinary\Uploader::upload($name, array( 
+                "eager" => array(
+                  array("width" => 115, "height" => 115, "crop" => "pad"),
+                  array("width" => 100, "height" => 100, "crop" => "crop")))
+            );
+            //$res = \Cloudder::getResult(); 
             $url = $res['url'];
+            $small_image_url = $res['eager'][0]['url'];
             $this->service->create(['img_id'=>$data['img_id'].$i,
                                         'merchant_id'=> $data['merchant_id'],
                                         'path'=> $url,
+                                        'small_size_path'=>$small_image_url,
                                         'post_id'=> $data['post_id']
                                         ]);
         }
@@ -118,6 +149,10 @@ class FreeAdsRepository implements FreeRepositoryInterface {
                     foreach($result as $key=>$value) {
                         $result[$key]->other_images = DB::table('free_ads')->select('free_ads.main_image')->where('product_sub_id',$value->product_sub_id)
                         ->where('active', $status)->get();
+                        $region = $this->state->getStateById((int)$result[$key]->region);
+                        $place = $this->lga->getLgaId((int)$result[$key]->place);
+                        $result[$key]->region = trim($region->states.','.$place->lga_name); 
+                        $result[$key]->place = $place->lga_name;
                       
                     }
                     return $result;
@@ -131,6 +166,10 @@ class FreeAdsRepository implements FreeRepositoryInterface {
                     foreach($result as $key=>$value) {
                         $result[$key]->other_images = DB::table('free_ads')->join('product_images','product_images.post_id','=','free_ads.fid')
                             ->where('free_ads.fid',$value->fid)->select('product_images.*')->get();
+                            $region = $this->state->getStateById((int)$result[$key]->region);
+                                $place = $this->lga->getLgaId((int)$result[$key]->place);
+                                $result[$key]->region = trim($region->states.','.$place->lga_name); 
+                                $result[$key]->place = $place->lga_name;
                             $image_count = 0;
                             $image_array = $result[$key]->other_images;
                             if(sizeof($image_array) >=1) {
@@ -154,10 +193,17 @@ class FreeAdsRepository implements FreeRepositoryInterface {
                         ->skip(0)->take($limit)->orderby('created_at',$sort)
                         ->get();
                        
-                        if(count($result) > 1) {
+                        if(count($result) >= 1) {
+                            $category = $this->sub_cat->subCategoryList($result[0]->category_id);
+                            
+                            $main_category = $this->cat->category($result[0]->category_id);
                             foreach($result as $key=>$value) {
                                 $result[$key]->other_images = DB::table('free_ads')->join('product_images','product_images.post_id','=','free_ads.fid')
                                 ->where('free_ads.fid',$value->fid)->select('product_images.*')->get();
+                                $region = $this->state->getStateById((int)$result[$key]->region);
+                                $place = $this->lga->getLgaId((int)$result[$key]->place);
+                                $result[$key]->region = trim($region->states.','.$place->lga_name); 
+                                $result[$key]->place = $place->lga_name;
                                 $image_count = 0;
                                 $image_array = $result[$key]->other_images;
                                 if(sizeof($image_array) >=1) {
@@ -174,7 +220,8 @@ class FreeAdsRepository implements FreeRepositoryInterface {
 
                             $newArray['similar_ads'] = $this->getAllSimilarCategory($result[0]->category_id,$limit,$status, $sort);
                         
-                            
+                            $newArray['category'] = $category[0];
+                            $newArray['main_category'] = $main_category;
                         }else{
 
                             return [];
@@ -219,7 +266,12 @@ class FreeAdsRepository implements FreeRepositoryInterface {
             $product_sub_category_id = $post_add[0]->product_sub_id;
             if(isset($post_add) && !empty($post_add) && !is_null($post_add)){
                 $post_add [0]->other_images = $this->service->where('post_id', 'like', '%'.$id.'%')->get();
+                $region = $this->state->getStateById((int)$post_add[0]->region);
+                $place = $this->lga->getLgaId((int)$post_add[0]->place);
+                $post_add [0]->region = trim($region->states.','. $place->lga_name);
+                $post_add[0]->place = $place->lga_name;
                 $post_add[0]->similar_ads = $this->viewProductSubCategoryItemAndRelatedCategory($limit,$status,$product_sub_category_id, 'asc');
+                $post_add[0]['main_category'] = $this->cat->category($post_add[0]->category_id);
                 return $post_add;
         }
         }

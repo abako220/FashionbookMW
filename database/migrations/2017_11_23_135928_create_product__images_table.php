@@ -16,6 +16,7 @@ class CreateProductImagesTable extends Migration
             $table->string('img_id', 200)->primary();
             $table->string('merchant_id', 200);
             $table->string('path', 200);
+            $table->string('small_size_path',200);
             $table->string('post_id', 200);
             $table->string('store_id', 200);
             $table->timestamps();

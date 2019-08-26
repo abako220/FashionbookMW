@@ -14,4 +14,8 @@ class StateImpl implements StateInterface {
     public function all(){
         return $this->model->all()->toArray();
     }
+    public function getStateById($id) 
+    {
+        return $this->model->find($id);
+    }
 }
